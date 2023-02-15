@@ -61,6 +61,7 @@ def save_compressed(request):
               originalImg=orig_image,
               imgUrl=imgUrl
             )
+        print(img)
         return render(
             request,
             'image_form.html',{

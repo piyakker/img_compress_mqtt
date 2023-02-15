@@ -16,23 +16,30 @@ port = 1883
 topic = "django/mqtt"
 topic_sub = "django/mqtt"
 client_id = 'xzcfghjt123'
+save_path = os.path.abspath('../../../Pictures')
 
 
 def compress(client, image_file, id):
 
     filepath = os.path.join(os.getcwd(), image_file)
-    print(filepath)
     image = Image.open(filepath)
+
     filename = uuid.uuid1()
-    image.save(f"/home/ericlien/Pictures/{filename}.jpg",
+    print(os.path.join(save_path, f"{filename}.jpg"))
+    image.save(os.path.join(save_path, f"{filename}.jpg"),
                "JPEG",
                optimize=True,
                quality=10)
-    client.publish(
-        'compressed', f"/home/ericlien/Pictures/{filename}.jpg", 2)
+    
+    # client.publish(
+    #     'compressed', f"/home/ericlien/Pictures/{filename}.jpg", 2)
+    
     requests.post('http://127.0.0.1:8000/compressed',
-                  data={'id': id, 'imgUrl': f"/home/ericlien/Pictures/{filename}.jpg"})
-    print('done')
+                  data={
+            'id': id,
+            'imgUrl': f"/home/ericlien/Pictures/{filename}.jpg"
+        })
+    
     os.remove(image_file)
     return
 
@@ -52,10 +59,8 @@ def connect_mqtt():
 def subscribe(client: mqtt_client):
     def on_message(client, userdata, msg):
 
-        # print(type(msg))
-        # print(dir(msg))
         unpickled = pickle.loads(msg.payload)
-        # print(f"Message : {unpickled['payload']}")
+
         f = open('receive.jpg', 'wb')
         f.write(unpickled['payload'])
         f.close()
