@@ -9,7 +9,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('publish', views.publish_message, name='publish'),
     path('', include(('base.urls'))),
 ]
 if settings.DEBUG:

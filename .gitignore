@@ -5,3 +5,7 @@ __pycache__
 db.sqlite3
 media
 venv
+
+# practice
+subscriber.py
+publisher.py

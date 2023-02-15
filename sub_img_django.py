@@ -14,10 +14,8 @@ from paho.mqtt import client as mqtt_client
 broker = 'broker.hivemq.com'
 port = 1883
 topic = "django/mqtt"
-topic_sub = "django/mqtt"
 client_id = 'xzcfghjt123'
-save_path = os.path.abspath('../../../Pictures')
-
+save_folder = os.path.abspath('../../../Pictures')
 
 def compress(client, image_file, id):
 
@@ -25,19 +23,17 @@ def compress(client, image_file, id):
     image = Image.open(filepath)
 
     filename = uuid.uuid1()
-    print(os.path.join(save_path, f"{filename}.jpg"))
-    image.save(os.path.join(save_path, f"{filename}.jpg"),
+    save_path = os.path.join(save_folder, f"{filename}.jpg")
+
+    image.save(save_path,
                "JPEG",
                optimize=True,
                quality=10)
     
-    # client.publish(
-    #     'compressed', f"/home/ericlien/Pictures/{filename}.jpg", 2)
-    
-    requests.post('http://127.0.0.1:8000/compressed',
+    requests.post('http://localhost:8000/compressed',
                   data={
             'id': id,
-            'imgUrl': f"/home/ericlien/Pictures/{filename}.jpg"
+            'imgUrl': save_path
         })
     
     os.remove(image_file)
@@ -50,6 +46,7 @@ def connect_mqtt():
             print("Successfully connected to MQTT broker")
         else:
             print("Failed to connect, return code %d", rc)
+
     client = mqtt_client.Client(client_id)
     client.on_connect = on_connect
     client.connect(broker, port)
@@ -66,7 +63,7 @@ def subscribe(client: mqtt_client):
         f.close()
         compress(client, 'receive.jpg', unpickled['id'])
         
-    client.subscribe(topic_sub)
+    client.subscribe(topic)
     client.on_message = on_message
 
 

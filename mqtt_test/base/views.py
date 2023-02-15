@@ -8,7 +8,7 @@ from django.http import HttpResponse, JsonResponse
 
 # Dev modules
 from base.forms import UserImageForm
-from .models import compressedImage, UploadImage
+from .models import CompressedImage, OriginalImage
 
 
 
@@ -27,7 +27,7 @@ def image_request(request):
         form = UserImageForm(request.POST, request.FILES)
         if form.is_valid():
             img_object = form.save(commit=False)
-            img_bytes = request.FILES['image'].read()
+            img_bytes = request.FILES['orig_img_url'].read()
             img_object.save()
 
             pickled = pickle.dumps({
@@ -55,29 +55,25 @@ def image_request(request):
 def save_compressed(request):
     if request.method == 'POST':
         imgUrl = request.POST['imgUrl']
-        orig_image = UploadImage.objects.get(id=request.POST['id'])
+        original_image = OriginalImage.objects.get(id=request.POST['id'])
 
-        img = compressedImage.objects.create(
-              originalImg=orig_image,
-              imgUrl=imgUrl
+        img = CompressedImage.objects.create(
+                orig_img=original_image,
+                comp_img_url=imgUrl
             )
-        print(img)
-        return render(
-            request,
-            'image_form.html',{
-            'imgUrl': imgUrl
-            })
 
+        return
     return HttpResponse('save compressed page')
 
 
 def get_compressed_url(request):
     pk = request.GET.get('pk')
-    original_image = UploadImage.objects.get(pk=pk)
-    urls = compressedImage.objects.filter(
-        originalImg=original_image
+    original_image = OriginalImage.objects.get(pk=pk)
+    urls = CompressedImage.objects.filter(
+        orig_img=original_image
         )
+    
     if len(urls):
         return JsonResponse({
-            'url': urls[0].imgUrl
+            'url': urls[0].comp_img_url
             })

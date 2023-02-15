@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import UploadImage, compressedImage
+from .models import OriginalImage, CompressedImage
 
 # Register your models here.
-admin.site.register(UploadImage)
-admin.site.register(compressedImage)
+admin.site.register(OriginalImage)
+admin.site.register(CompressedImage)

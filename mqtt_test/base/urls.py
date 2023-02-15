@@ -1,9 +1,10 @@
 from django.urls import path
-from .views import image_request, save_compressed, get_compressed_url
+
+from . import views
 
 app_name = 'sampleapp'
 urlpatterns = [
-    path('', image_request, name="image-request"),
-    path('compressed', save_compressed, name="image-url"),
-    path('get-compressed', get_compressed_url)
+    path('', views.image_request, name="image-request"),
+    path('compressed', views.save_compressed, name="image-url"),
+    path('get-compressed', views.get_compressed_url)
 ]
