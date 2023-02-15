@@ -30,12 +30,16 @@ def compress(client, image_file, id):
                optimize=True,
                quality=10)
     
-    requests.post('http://localhost:8000/compressed',
-                  data={
-            'id': id,
-            'imgUrl': save_path
-        })
-    
+    try:
+        requests.post('http://localhost:8000/compressed',
+                    data={
+                'id': id,
+                'imgUrl': save_path
+            })
+        print(f'save path of compressed image {filename} to db')
+    except:
+        print('Failed to save path of compressed image to db')
+
     os.remove(image_file)
     return
 
