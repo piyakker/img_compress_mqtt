@@ -2,7 +2,7 @@
 
 This is a simple project where you can upload an image through the browser, and the compressor component will automatically compress the image and save it to your Pictures folder.
 
-Using MQTT provides a more modularized system.By utilizing the Pub/Sub function, it would much easier to add more features other from the compressor.
+Using MQTT provides a more modularized system.By utilizing the Pub/Sub function, it would much easier to add more features apart from the compressor.
 
 ## System Design
 
